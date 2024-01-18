@@ -3,7 +3,7 @@ import React from "react";
 
 import "../style/LatestLocationStyle.css"
 
-function LatestLocationComponent() {
+function LatestLocationComponent({locationMessage}) {
 
     // State for message box
     const [isHidden, setIsHidden] = useState(false)
@@ -15,13 +15,13 @@ function LatestLocationComponent() {
 
     return (
         <div className="latestlocation-layout">
-            {!isHidden && (<div className="message is-danger  notification-box">
+            {!isHidden && (locationMessage!="") &&(<div className="message is-danger  notification-box">
                 <div className="message-header">
                     <p>Bus Notification</p>
                     <button className="delete" aria-label="delete" onClick={closeMessageBox}></button>
                 </div>
                 <div className="message-body">
-                    Your bus is arriving <strong>South Okkalapa</strong>.
+                    Your bus is arriving <strong>{locationMessage}</strong>.
                 </div>
             </div>)}
         </div>

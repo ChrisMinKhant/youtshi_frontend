@@ -1,10 +1,10 @@
 import "../style/ButtonStyle.css"
 
-function ButtonComponent() {
+function ButtonComponent({locationMessage}) {
     return (
-        <div className="button-layout">
+        (locationMessage != "" && (<div className="button-layout">
             <input className="button is-danger is-rounded" type="submit" value="YOUT SHI"></input>
-        </div>
+        </div>))
     );
 };
 
