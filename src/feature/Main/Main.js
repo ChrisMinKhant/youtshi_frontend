@@ -1,12 +1,24 @@
 import LocationComponent from "./component/LocationComponent";
 import ButtonComponent from "./component/ButtonComponent";
-import "./style/MainStyle.css"
+import "../../index.css"
 import LatestLocationComponent from "./component/LatestLocationComponent";
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 
 function Main() {
+    // State for message box
+    const [isHidden, setIsHidden] = useState(false)
 
+    // Change the state of the message box
+    function handleMessageBox() {
+        setIsHidden(!isHidden)
+    }
+
+    function clickSubmit() {
+        if (isHidden) {
+            setIsHidden(!isHidden)
+        }
+    }
     // Websocket related part
     const webSocketRequest = {
         BusNumber: 25
@@ -14,18 +26,18 @@ function Main() {
 
     const [latestLocation, setLatestLocation] = useState("")
 
-    useEffect(()=>{
+    useEffect(() => {
         const ws = new WebSocket("ws://localhost:8000/ws")
-        
-        ws.addEventListener("open",(event)=>{
+
+        ws.addEventListener("open", (event) => {
             ws.send(JSON.stringify(webSocketRequest))
         })
 
-        ws.addEventListener("message",(event)=>{
+        ws.addEventListener("message", (event) => {
             console.log(event)
         })
 
-    },[])
+    }, [])
 
     // Notify event related part
     let notifyRequest = {
@@ -53,9 +65,9 @@ function Main() {
 
     return (
         <form className="main-layout full-screen" onSubmit={handleSubmit}>
-            <LatestLocationComponent locationMessage={latestLocation}></LatestLocationComponent>
+            <LatestLocationComponent locationMessage={latestLocation} clickMessage={handleMessageBox} isHidden={isHidden}></LatestLocationComponent>
             <LocationComponent onChange={handleOnChange}></LocationComponent>
-            <ButtonComponent locationMessage={latestLocation}></ButtonComponent>
+            <ButtonComponent locationMessage={latestLocation} clickSubmit={clickSubmit}></ButtonComponent>
         </form>
     );
 };

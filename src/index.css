@@ -6,3 +6,32 @@ body {
     height: 100%;
     width: 100%;
 }
+
+.full-screen {
+    height: 100lvh;
+}
+
+.main-layout {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    grid-template-rows: auto auto auto auto;
+    place-items: center;
+}
+
+.location-layout {
+    grid-column-start: 2;
+    grid-column-end: 2;
+    grid-row-start: 2;
+    grid-row-end: 2;
+
+    text-align: center;
+}
+
+.button-layout {
+    grid-column-start: 2;
+    grid-column-end: 2;
+    grid-row-start: 3;
+    grid-row-end: 3;
+
+    text-align: center;
+}
