@@ -1,19 +1,37 @@
-import React from "react";
+import React, { useState, reducer, useReducer, useEffect } from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Main from "../src/feature/Main/Main";
+
 import "../src/index.css";
+
 import Login from "./feature/Login/Login";
+import Main from "./feature/Main/Main";
 
+export const ConnectedWebSocket = new WebSocket("ws://localhost:8000/ws");
 
-const root = ReactDOM.createRoot(document.getElementById("root"))
+export default function App() {
+  
+  const [authentication, setAuthentication] = useState(false);
 
-root.render(
-    <BrowserRouter>
-        <Routes>
-            <Route path="/" element={<Login />}>
-                <Route path="notification" element={<Main />} />
-            </Route>
-        </Routes>
-    </BrowserRouter>
-)
+  function authenticate() {
+    setAuthentication(!authentication);
+  }
+
+  if (authentication) {
+    return (
+      <React.StrictMode>
+        <Main />
+      </React.StrictMode>
+    );
+  } else {
+    return (
+      <React.StrictMode>
+        <Login changeAuthenticationStatus={authenticate} />
+      </React.StrictMode>
+    );
+  }
+}
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+
+root.render(<App />);

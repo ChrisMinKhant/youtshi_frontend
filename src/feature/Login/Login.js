@@ -1,44 +1,36 @@
-import ButtonComponent from "./component/ButtonComponent";
-import TextAreaComponent from "./component/TextAreaComponent";
-import { WebSession } from "../../WebSession.js"
-import "../../index.css"
+import ButtonComponent from "./component/ButtonComponent.js";
+import TextAreaComponent from "./component/TextAreaComponent.js";
+import { WebSocketWrapper } from "../../WebSocketWrapper.js";
+import "../../index.css";
 import Cookies from "js-cookie";
-import { json } from "react-router-dom";
+import { ConnectedWebSocket } from "../../index.js";
+import { useEffect } from "react";
 
-function Login() {
-    const session = new WebSession()
+function Login({ changeAuthenticationStatus }) {
+  useEffect(() => {
+    ConnectedWebSocket.onmessage = (event, flag) => {
+      Cookies.set("sessionId", JSON.stringify(event.data));
+    };
+  }, []);
+  
+  function handleOnSubmit(event) {
+    event.preventDefault();
 
-    function handleOnSubmit(event) {
-        event.preventDefault()
+    const loginRequest = {
+      BusNumber: Number.parseInt(event.target[0].value),
+    };
 
-        const loginRequest = {
-            BusNumber: event.target[0].value
-        }
+    ConnectedWebSocket.send(JSON.stringify(loginRequest));
 
-        session.setBusNumber(event.target[0].value)
+    changeAuthenticationStatus();
+  }
 
-        Cookies.set("busNumber", session.getBusNumber())
-        Cookies.set("sessionId", session.getSessionId())
-        Cookies.set("webSocketConnection", session.getWebSocketConnection())
-
-        const gotSession = new WebSession()
-
-        gotSession.setBusNumber(Cookies.get("busNumber"))
-
-        console.log(gotSession.getBusNumber())
-
-        session.deleteSession()
-
-        console.log(gotSession.getBusNumber())
-
-    }
-
-    return (
-        <form className="main-layout full-screen" onSubmit={handleOnSubmit}>
-            <TextAreaComponent></TextAreaComponent>
-            <ButtonComponent></ButtonComponent>
-        </form>
-    )
+  return (
+    <form className="main-layout full-screen" onSubmit={handleOnSubmit}>
+      <TextAreaComponent></TextAreaComponent>
+      <ButtonComponent></ButtonComponent>
+    </form>
+  );
 }
 
 export default Login;
