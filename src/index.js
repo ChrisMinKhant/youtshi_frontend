@@ -6,11 +6,13 @@ import "../src/index.css";
 
 import Login from "./feature/Login/Login";
 import Main from "./feature/Main/Main";
+import Cookies from "js-cookie";
+import { Location } from "./Location";
 
 export const ConnectedWebSocket = new WebSocket("ws://localhost:8000/ws");
+export const location = new Location();
 
 export default function App() {
-  
   const [authentication, setAuthentication] = useState(false);
 
   function authenticate() {

@@ -9,6 +9,7 @@ function LocationComponent({ onChange }) {
                 <select className="is-focus" onChange={event => onChange(event.target.value)}>
                     <option value={""} >Location</option>
                     <option value={"South Okkalapa"}>South Okkalapa</option>
+                    <option value={"Insein"}>Insein</option>
                 </select>
             </div>
         </div>
