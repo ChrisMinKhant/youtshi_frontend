@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 
 import "../../index.css";
@@ -6,14 +6,30 @@ import "../../index.css";
 import LocationComponent from "./component/LocationComponent";
 import ButtonComponent from "./component/ButtonComponent";
 import LatestLocationComponent from "./component/LatestLocationComponent";
-import { ConnectedWebSocket, location } from "../..";
-import Cookies from "js-cookie";
-import { Location } from "../../Location";
+import { ConnectedWebSocket } from "../..";
+import { useCookies } from "react-cookie";
 
 function Main() {
+  const [cookies, setCookie] = useCookies(["SessionId"]);
+
+  useEffect(() => {
+    ConnectedWebSocket.onmessage = (event) => {
+      const wsMessage = JSON.parse(event.data);
+
+      if (wsMessage.SessionId != 0 && wsMessage.SessionId != null) {
+        console.log(wsMessage.SessionId);
+        setCookie("SessionId", wsMessage.SessionId, { path: "/" });
+      } else if (wsMessage.SessionId == null) {
+        console.log(wsMessage);
+        setUpdateLocation(wsMessage);
+      }
+    };
+  }, []);
+
   // State for message box
   const [isHidden, setIsHidden] = useState(false);
 
+  const [updateLocation, setUpdateLocation] = useState("");
   // Change the state of the message box
   function handleMessageBox() {
     setIsHidden(!isHidden);
@@ -33,7 +49,7 @@ function Main() {
 
   function handleSubmit(event) {
     event.preventDefault();
-    notifyRequest.ArrivedAddress = location.getLatest();
+    notifyRequest.ArrivedAddress = updateLocation;
 
     axios
       .post("http://localhost:8000/notify", notifyRequest)
@@ -46,20 +62,19 @@ function Main() {
   }
 
   function handleOnChange(event) {
-    location.setLatest(event);
-    console.log(location.getLatest());
+    setUpdateLocation(event);
   }
 
   return (
     <form className="main-layout full-screen" onSubmit={handleSubmit}>
       <LatestLocationComponent
-        locationMessage={location.getLatest()}
+        locationMessage={updateLocation}
         clickMessage={handleMessageBox}
         isHidden={isHidden}
       ></LatestLocationComponent>
       <LocationComponent onChange={handleOnChange}></LocationComponent>
       <ButtonComponent
-        locationMessage={location.getLatest()}
+        locationMessage={updateLocation}
         clickSubmit={clickSubmit}
       ></ButtonComponent>
     </form>

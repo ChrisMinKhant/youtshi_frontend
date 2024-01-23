@@ -1,16 +1,12 @@
-import React, { useState, reducer, useReducer, useEffect } from "react";
+import React, { useState } from "react";
 import ReactDOM from "react-dom/client";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import "../src/index.css";
 
 import Login from "./feature/Login/Login";
 import Main from "./feature/Main/Main";
-import Cookies from "js-cookie";
-import { Location } from "./Location";
 
 export const ConnectedWebSocket = new WebSocket("ws://localhost:8000/ws");
-export const location = new Location();
 
 export default function App() {
   const [authentication, setAuthentication] = useState(false);
