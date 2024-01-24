@@ -10,9 +10,14 @@ import { ConnectedWebSocket } from "../..";
 import { useCookies } from "react-cookie";
 
 function Main() {
-  const [cookies, setCookie] = useCookies(["SessionId"]);
+  const [cookies, setCookie] = useCookies(["SessionId", "BusNumber"]);
+
+  const [BusNumber, setBusNumber] = useState(0);
 
   useEffect(() => {
+    console.log(cookies.BusNumber);
+    setBusNumber(cookies.BusNumber);
+
     ConnectedWebSocket.onmessage = (event) => {
       const wsMessage = JSON.parse(event.data);
 
@@ -43,12 +48,15 @@ function Main() {
 
   // Notify event related part
   let notifyRequest = {
-    BusNumber: 25,
+    BusNumber: BusNumber,
     ArrivedAddress: "",
   };
 
   function handleSubmit(event) {
     event.preventDefault();
+
+    console.log("BusNumber at submit >>> " + notifyRequest.BusNumber);
+
     notifyRequest.ArrivedAddress = updateLocation;
 
     axios

@@ -5,10 +5,12 @@ import { ConnectedWebSocket, location } from "../../index.js";
 import { useCookies } from "react-cookie";
 
 function Login({ changeAuthenticationStatus }) {
-  const [cookies, setCookie] = useCookies(["SessionId"]);
+  const [cookies, setCookie] = useCookies(["SessionId", "BusNumber"]);
 
   function handleOnSubmit(event) {
     event.preventDefault();
+
+    setCookie("BusNumber", event.target[0].value, { path: "/" });
 
     if (cookies.SessionId != null) {
       ConnectedWebSocket.send(
